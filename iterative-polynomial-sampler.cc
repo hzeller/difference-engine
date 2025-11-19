@@ -24,7 +24,7 @@
 
 #include <array>
 #include <cmath>
-#include <iostream>
+#include <cstdio>
 
 #if USE_FIXED_POINT
 #include "cnl/scaled_integer.h"
