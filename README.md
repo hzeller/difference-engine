@@ -11,7 +11,7 @@ requirements and memory constraints.
 
 This [short paper](docs/difference-engine.pdf) describes the idea.
 
-## Implementation C++
+## Implementation in C++
 
 Proof-of-concept in `iterative-polynomial-sampler.cc`.
 
@@ -28,6 +28,16 @@ Use `gnuplot` to visualize the output and error:
 ```
 
 ![Gnuplot output](img/example.png)
+
+## Implementation in Rust
+
+Essentially a transcript of the c++ code to Rust, including a similar
+script-like self-compile (thanks [Gemini](https://gemini.google.com)):
+
+
+```
+./iterative-polynomial-sampler.rs > poly.data && gnuplot plot-poly.gp
+```
 
 ## Implementation in XLS
 

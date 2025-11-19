@@ -8,5 +8,6 @@ used_stdenv.mkDerivation {
   buildInputs = with pkgs;
     [
       gnuplot
+      rustc
     ];
 }
