@@ -1,4 +1,6 @@
 *~
+cnl/
 .envrc
 .direnv
 iterative-polynomial-sampler_bin??
+poly.data

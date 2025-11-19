@@ -1,6 +1,5 @@
-#if 0  // Invoke with /bin/sh or simply add executable bit on this file on Unix.
-B=${0%%.cc}_bincc; [ "$B" -nt "$0" ] || c++ -std=c++20 -Icnl/include -o"$B" "$0" && exec "$B" "$@";
-#endif
+//usr/bin/env true; B=${0%%.cc}_bincc; [ "$B" -nt "$0" ] || c++ -std=c++20 -Icnl/include -o"$B" "$0" && exec "$B" "$@";
+
 /* -*- mode: c++; c-basic-offset: 2; indent-tabs-mode: nil; -*- */
 
 // Calculate polynomials iteratively using only addition operations and fixed

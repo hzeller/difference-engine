@@ -1,4 +1,4 @@
-//; B=${0%%.rs}_binrs; [ "$B" -nt "$0" ] || rustc -o"$B" "$0" && exec "$B" "$@"
+//usr/bin/env true; B=${0%%.rs}_binrs; [ "$B" -nt "$0" ] || rustc -o"$B" "$0" && exec "$B" "$@"
 
 // Transcript from the C++ program iterative-polynomial-sampler.cc, see there
 // for details.
