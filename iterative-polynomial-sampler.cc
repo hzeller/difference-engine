@@ -53,7 +53,7 @@ using register_number_t = float;
 // Initialized with coefficients 0 (constant), 1 (x), 2 (x^2) ... N (x^N)
 //
 // Provides evaluation operator().
-template <int N, typename poly_real_t = long double> class Polynomial {
+template <int N, typename poly_real_t = double> class Polynomial {
 public:
   Polynomial(std::array<poly_real_t, N + 1> coefficients)
       : coefficients_(coefficients) {}
@@ -77,12 +77,23 @@ private:
 // using the desired starting `x` and `dx` value.
 // Each Next() call returns the p(n + 1) value.
 //
-// We have two types: poly_real_t, the resolution the polynomial coefficients
-// are prepared in (typically hi resolution as this is a one-off operation), and
-// the register_number_t, the type the registers use to keep track. They can
-// often be a simpler kind as only addition operations are needed.
+// We have two types.
+//   * poly_real_t
+//     The number the polynomial coefficients are represented and
+//     prepared in (typically hi-resolution as this is a one-off operation and
+//     to minimize initial error).
 //
-// poly_real_t needs to allow multiplication and addition
+//     The "poly_real_t" type needs to allow multiplication, std::pow() and
+//     addition. Also conversion into "register_number_t".
+//
+//   * register_number_t
+//     The result type of the polynomial evaluated by this Sampler, also the
+//     type the registers store to keep state.
+//
+//     Can be a simpler type, it only needs to allow addition.
+//     Resolution can be chosen to best fit range and memory requirements.
+//
+//     The "register_number_t" type needs to allow addition.
 template <int N, typename register_number_t = double>
 class IterativePolynomialSampler {
 public:
@@ -131,9 +142,9 @@ int main(int, char *[]) {
   const std::array<hires_number_t, N + 1> kCoeffcients = {-7, 10, -0.8, 0.01};
   const Polynomial<N, hires_number_t> p(kCoeffcients);
 
-  constexpr hires_number_t kX = 3;    // Start X position
-  constexpr hires_number_t kDx = 0.1; // Calulate in these dx steps
-  constexpr int kNumSamples = 1000;   // Calculate for this many steps.
+  constexpr hires_number_t kX  = 3;     // Start X position
+  constexpr hires_number_t kDx = 0.1;   // Calulate in these dx steps
+  constexpr int kNumSamples    = 1000;  // Calculate for this many steps.
 
   // Iterative sampler with chosen register number representation.
   IterativePolynomialSampler<N, register_number_t> s(p, kX, kDx);

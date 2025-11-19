@@ -1,13 +1,15 @@
 # Polynomial sampler using only additions
 
 Calculate polynomials iteratively using only addition operations and fixed
-memory. Essentially Babbage's difference engine algorithm (Rediscovered by the
+memory. Essentially Babbage's difference engine algorithm (Rederived by the
 authors over a coffee at CCC 2023).
 
 The initial register values have to be calculated given the original polynomial,
 after that next values are calculated just updating N+1 (N=degree of Polynomial)
 registers. The resolution of these registers can be chosen to fit the accuracy
 requirements and memory constraints.
+
+This [short paper](docs/difference-engine.pdf) describes the idea.
 
 ## Implementation C++
 
