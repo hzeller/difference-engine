@@ -1,4 +1,4 @@
-//usr/bin/env true; B=${0%%.cc}_bincc; [ "$B" -nt "$0" ] || c++ -std=c++20 -Icnl/include -o"$B" "$0" && exec "$B" "$@";
+//usr/bin/env true; B=${0%%.cc}_bincc; [ "$B" -nt "$0" ] || c++ -std=c++20 -Icnl/include -o"$B" "$0" || exit && exec "$B" "$@";
 
 /* -*- mode: c++; c-basic-offset: 2; indent-tabs-mode: nil; -*- */
 
@@ -58,7 +58,7 @@ public:
       : coefficients_(coefficients) {}
 
   // Evaluate polynomial at x.
-  poly_real_t operator()(poly_real_t x) const {
+  poly_real_t eval(poly_real_t x) const {
     poly_real_t result = coefficients_[0];
     for (int i = 1; i < N + 1; ++i) {
       result += coefficients_[i] * std::pow(x, i);
@@ -106,8 +106,7 @@ public:
     // Fill the array with p(x - N - 1), p(x - N - 1 + dx) , p(x - N - 1 + 2dx),
     // etc...
     for (int i = 0; i < N + 1; ++i) {
-      hi_res_registers[i] = p(x + (i - N - 1) * dx);
-    }
+      hi_res_registers[i] = p.eval(x + (i - N - 1) * dx);    }
 
     // Compute the differences in place.
     for (int i = 0; i < N; ++i) {
@@ -158,7 +157,7 @@ int main(int, char *[]) {
     const hires_number_t x = kX + i * kDx;
 
     const register_number_t iterative_result = s.Next();
-    const hires_number_t actual_result = p(x);
+    const hires_number_t actual_result = p.eval(x);
 
     // How far are we off ?
     const hires_number_t error =
