@@ -29,7 +29,7 @@ set y2range [-0.5:0.5] ; set y2tics 0.1 ; set ytics nomirror
 plot "out.data" with lines, "" using 1:3 with lines, "" using 1:5 axes x1y2
 ```
 
-![Gnuplot output][img/example.png]
+![Gnuplot output](img/example.png)
 
 Outputs information about
 ## Implementation in XLS
