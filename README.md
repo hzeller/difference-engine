@@ -16,22 +16,17 @@ Proof-of-concept in `iterative-polynomial-sampler.cc`.
 It is done as self-compiling C++ script for ease of use:
 
 ```
-./iterative-polynomial-sampler.cc > out.data
+./iterative-polynomial-sampler.cc > poly.data
 ```
 
-Use `gnuplot` to visualize the output and error.
+Use `gnuplot` to visualize the output and error:
 
 ```
-$ gnuplot
-set ylabel "Polynomial"; set y2label "Error Percent"
-set y2range [-0.5:0.5] ; set y2tics 0.1 ; set ytics nomirror
-# Draw sampled polynomial, _actual_ polynomial and error of the sample
-plot "out.data" with lines, "" using 1:3 with lines, "" using 1:5 axes x1y2
+./iterative-polynomial-sampler.cc > poly.data && gnuplot plot-poly.gp
 ```
 
 ![Gnuplot output](img/example.png)
 
-Outputs information about
 ## Implementation in XLS
 
 TBD
