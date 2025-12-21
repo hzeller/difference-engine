@@ -106,7 +106,8 @@ public:
     // Fill the array with p(x - N - 1), p(x - N - 1 + dx) , p(x - N - 1 + 2dx),
     // etc...
     for (int i = 0; i < N + 1; ++i) {
-      hi_res_registers[i] = p.eval(x + (i - N - 1) * dx);    }
+      hi_res_registers[i] = p.eval(x + (i - N - 1) * dx);
+    }
 
     // Compute the differences in place.
     for (int i = 0; i < N; ++i) {
@@ -166,7 +167,7 @@ int main(int, char *[]) {
 
     // Here, we cast them to double or long double that the format string always
     // works
-    fprintf(stdout, "%3.1f\t%12.6f\t%12.6f\t%10Lg\t%.5f\n", (double)x,
+    fprintf(stdout, "%3.1f\t%12.6f\t%12.6f\t%10Le\t%.5f\n", (double)x,
             (double)iterative_result, (double)actual_result, (long double)error,
             (double)error_percent);
   }

@@ -9,5 +9,7 @@ used_stdenv.mkDerivation {
     [
       gnuplot
       rustc
+
+      llvmPackages_21.clang-tools  # clangd
     ];
 }

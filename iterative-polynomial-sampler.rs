@@ -115,7 +115,7 @@ fn main() {
 
         // Print results to stdout
         println!(
-            "{x:3.1}\t{iterative_result:12.6}\t{actual_result:12.6}\t{error:10.6}\t{error_percent:.5}",
+            "{x:3.1}\t{iterative_result:12.6}\t{actual_result:12.6}\t{error:10.6e}\t{error_percent:.5}",
             x = x,
             iterative_result = iterative_result,
             actual_result = actual_result,
