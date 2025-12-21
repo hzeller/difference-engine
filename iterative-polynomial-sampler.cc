@@ -42,8 +42,10 @@ using hires_number_t = double;
 // representation.
 
 #if USE_FIXED_POINT
-// A fixed-point with <32>.<32> bits
-using register_number_t = cnl::scaled_integer<int64_t, cnl::power<-32>>;
+// A fixed-point with <64-FRACTION_BITS>.<FRACTION_BITS> bits
+constexpr int FRACTION_BITS = 32;
+using register_number_t = cnl::scaled_integer<int64_t,
+                                              cnl::power<-FRACTION_BITS>>;
 #else
 using register_number_t = float;
 #endif
