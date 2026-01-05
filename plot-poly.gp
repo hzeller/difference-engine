@@ -1,3 +1,5 @@
+#!/usr/bin/env gnuplot
+
 filename="poly.data"
 
 set key left top

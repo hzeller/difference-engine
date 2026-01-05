@@ -24,7 +24,7 @@ It is done as self-compiling C++ script for ease of use:
 Use `gnuplot` to visualize the output and error:
 
 ```
-./iterative-polynomial-sampler.cc > poly.data && gnuplot plot-poly.gp
+./iterative-polynomial-sampler.cc > poly.data && ./plot-poly.gp
 ```
 
 ![Gnuplot output](img/example.png)
@@ -36,7 +36,7 @@ script-like self-compile (thanks [Gemini](https://gemini.google.com)):
 
 
 ```
-./iterative-polynomial-sampler.rs > poly.data && gnuplot plot-poly.gp
+./iterative-polynomial-sampler.rs > poly.data && ./plot-poly.gp
 ```
 
 ## Implementation in XLS
