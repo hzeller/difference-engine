@@ -3,6 +3,8 @@
 #![feature(generics)]
 #![feature(explicit_state_access)]
 
+import std;
+
 // Registers to represent a polynomial to be calculated. It has one more elment
 // than the Polynomials degree.
 struct PolynomialRegisters<T: type, DEGREE: u32> {
@@ -90,11 +92,11 @@ impl IterativePolynomialSampler<T, DEGREE> {
 
 #[test]
 proc SamplerTest {
-    request:         chan<IterationRequest<u32, 2>> out,  // PD, see below
+    request:         chan<IterationRequest<s64, 3>> out,  // T, PD, see below
 
     // Get a new sample from our IterativePolynomialSampler
     sample_clock:    chan<()> out,
-    sample_rec:      chan<u32> in,
+    sample_rec:      chan<s64> in,
 
     // test book-keeping
     starting:        bool,
@@ -104,18 +106,23 @@ proc SamplerTest {
 }
 
 impl SamplerTest {
-    const SAMPLE_COUNT = u32:8;
-    const INITIAL_REGISTERS = [u32:2, 1, 0];
+    type T = s64;
+    const SAMPLE_COUNT = u32:30;
+
+    // To compare with our other examples in difference-engine repo,
+    // we use pre-calculated parameters from these * 1000000
+    const INITIAL_REGISTERS = [T:60, -14320, 568370, 15515890];
+
     const PD = array_size(INITIAL_REGISTERS) - 1;  // Polynomial degree
 
     fn new(done: chan<bool> out) -> Self {
         // This is not a |
-        let (req_s, req_r)       = chan<IterationRequest<u32, PD>>("new_it");
+        let (req_s, req_r)       = chan<IterationRequest<T, PD>>("new_it");
         let (clk_s, clk_r)       = chan<()>("sample-clock");
-        let (sample_s, sample_r) = chan<u32>("sample");
+        let (sample_s, sample_r) = chan<T>("sample");
 
-        let dut = IterativePolynomialSampler<u32, PD>::new(req_r, clk_r,
-                					   sample_s);
+        let dut = IterativePolynomialSampler<T, PD>::new(req_r, clk_r,
+                                                         sample_s);
         dut.spawn();
 
         SamplerTest {
@@ -137,8 +144,8 @@ impl SamplerTest {
         let tok = if is_starting {
             write(self.starting, false);
             trace_fmt!("start: sending request");
-            send(tok, self.request, IterationRequest<u32, PD> {
-                registers: PolynomialRegisters<u32, PD> {
+            send(tok, self.request, IterationRequest<T, PD> {
+                registers: PolynomialRegisters<T, PD> {
                     reg: INITIAL_REGISTERS,
                 },
                 count: SAMPLE_COUNT,
@@ -147,7 +154,17 @@ impl SamplerTest {
             tok
         };
 
-        const EXPECTED_SEQ = [u32:3, 8, 15, 24, 35, 48, 63, 80];
+        // Same values as ./iterative-polynomial-sampler.{cc,rs} * 1000_000
+        const EXPECTED_SEQ = [
+            T:16070000,  // dslx does not support underscores in literals yet.
+            T:16609910,
+            T:17135680,
+            T:17647370,
+            T:18145040,
+            T:18628750,
+            T:19098560,
+            T:19554530,
+        ];
 
         let remaining = read(self.receive_samples);
         if remaining != 0 {
@@ -156,8 +173,22 @@ impl SamplerTest {
             let (tok, sample_result) = recv(tok, self.sample_rec);
 
             let index = SAMPLE_COUNT - remaining;
-            trace_fmt!("{} {}", index, sample_result);
-            assert_eq(sample_result, EXPECTED_SEQ[index]);
+            // Print that back as decimal point value. We're 1M decimal mult.
+            // unfortunately, dslx does not have formatting with leading
+            // zeroes yet, so manually do the post decimal point manually.
+            trace_fmt!("{} {}.{}{}{}{}{}", index,
+                       sample_result / 1000000,
+                       std::abs((sample_result % 1000000) / 100000),
+                       std::abs((sample_result %  100000) / 10000),
+                       std::abs((sample_result %   10000) / 1000),
+                       std::abs((sample_result %    1000) / 100),
+                       std::abs((sample_result %     100) / 10),
+            );
+
+            // We only check a handful of the first samples
+            if index < array_size(EXPECTED_SEQ) {
+                assert_eq(sample_result, EXPECTED_SEQ[index]);
+            };
             write(self.receive_samples, remaining - 1);
         } else {
             send(tok, self.done, true);

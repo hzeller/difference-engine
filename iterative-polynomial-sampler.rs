@@ -61,6 +61,7 @@ impl<const N: usize, const N_PLUS_ONE: usize> IterativePolynomialSampler<N, N_PL
         let mut registers = [0.0; N_PLUS_ONE];
         for i in 0..N_PLUS_ONE {
             registers[i] = hi_res_registers[i] as RegisterNumber;
+            eprintln!("init reg[{}] = {}", i, registers[i] * 1000000.0);
         }
 
         IterativePolynomialSampler { registers }
