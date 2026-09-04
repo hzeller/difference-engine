@@ -6,10 +6,10 @@ PIPELINE_STAGES=1
 DSLX_OPTIONS=--dslx_stdlib_path=$(DSLX_STDLIB_PATH)
 #DSLX_OPTIONS+=--compare=jit
 
-iterative-polynomial-sampler.sv:
-iterative-polynomial-sampler.test:
+iterative_polynomial_sampler.sv:
+iterative_polynomial_sampler.test:
 
-test: iterative-polynomial-sampler.test
+test: iterative_polynomial_sampler.test
 
 %.ir: %.x
 	xls-ir-converter --top=$(TOP) $(DSLX_OPTIONS) --output_file=$@ $^
