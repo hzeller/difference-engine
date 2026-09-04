@@ -1,4 +1,4 @@
-//usr/bin/env -S make iterative-polynomial-sampler.test; exit
+//usr/bin/env -S make iterative_polynomial_sampler.test; exit
 // -*- mode: rust; indent-tabs-mode: nil -*-
 
 #![feature(generics)]
