@@ -116,8 +116,8 @@ impl SamplerTest {
         let (sample_s, sample_r) = chan<u32>("sample");
 
         let dut = IterativePolynomialSampler<u32, PD>::new(req_r, clk_r,
-							   sample_s);
-	dut.spawn();
+        						   sample_s);
+        dut.spawn();
 
         SamplerTest {
             request: req_s,
@@ -152,7 +152,7 @@ impl SamplerTest {
 
         let remaining = read(self.receive_samples);
         if remaining != 0 {
-	    // requesting, and then receiving the sample
+            // requesting, and then receiving the sample
             send(tok, self.sample_clock, ());
             let (tok, sample_result) = recv(tok, self.sample_rec);
 
