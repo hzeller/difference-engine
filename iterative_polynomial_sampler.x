@@ -6,10 +6,8 @@
 
 // Registers to represent a polynomial to be calculated. It has one more elment
 // than the Polynomials degree.
-struct PolynomialRegisters<T: type,
-                           DEGREE: u32,
-                           REGISTER_COUNT: u32 = {DEGREE + 1}> {
-    reg: T[REGISTER_COUNT],
+struct PolynomialRegisters<T: type, DEGREE: u32> {
+    reg: T[DEGREE + 1],
 }
 
 // An iteration request for a proc is the newly initialized registerss
@@ -45,9 +43,9 @@ proc IterativePolynomialSampler<T: type, DEGREE: u32> {
 }
 
 impl IterativePolynomialSampler<T, DEGREE> {
-    fn new(request: chan<IterationRequest<T, DEGREE>> in,
+    fn new(request:      chan<IterationRequest<T, DEGREE>> in,
            sample_clock: chan<()> in,
-           sample_out: chan<T> out) -> Self {
+           sample_out:   chan<T> out) -> Self {
         IterativePolynomialSampler<T, DEGREE> {
             request,
             sample_clock,
@@ -77,7 +75,7 @@ impl IterativePolynomialSampler<T, DEGREE> {
             // The last register holds the new polynomial value P(x+dx).
             send(tok, self.sample_out, reg[DEGREE]);
 
-            IterationRequest<T, DEGREE> {
+            IterationRequest<T, DEGREE> {  // updated state.
                 registers: PolynomialRegisters<T, DEGREE> {
                     reg: reg,
                 },
@@ -95,11 +93,14 @@ impl IterativePolynomialSampler<T, DEGREE> {
 proc SamplerTest {
     request:         chan<IterationRequest<u32, 2>> out,  // PD, see below
 
+    // Get a new sample from our IterativePolynomialSampler
     sample_clock:    chan<()> out,
     sample_rec:      chan<u32> in,
 
+    // test book-keeping
     starting:        bool,
     receive_samples: u32,
+
     done:            chan<bool> out,  // tell test harness that we're done.
 }
 
@@ -114,7 +115,10 @@ impl SamplerTest {
         let (clk_s, clk_r)       = chan<()>("sample-clock");
         let (sample_s, sample_r) = chan<u32>("sample");
 
-        IterativePolynomialSampler<u32, PD>::new(req_r, clk_r, sample_s).spawn();
+        let dut = IterativePolynomialSampler<u32, PD>::new(req_r, clk_r,
+							   sample_s);
+	dut.spawn();
+
         SamplerTest {
             request: req_s,
             sample_clock: clk_s,
@@ -129,9 +133,7 @@ impl SamplerTest {
     fn next(self) {
         let tok = join();
 
-        let receive_samples = read(self.receive_samples);
-
-        // on startup: send a request
+        // on startup: send a request with initial registers.
         let is_starting = read(self.starting);
         let tok = if is_starting {
             write(self.starting, false);
@@ -140,7 +142,7 @@ impl SamplerTest {
                 registers: PolynomialRegisters<u32, PD> {
                     reg: INITIAL_REGISTERS,
                 },
-                count: receive_samples,
+                count: SAMPLE_COUNT,
             })
         } else {
             tok
@@ -150,6 +152,7 @@ impl SamplerTest {
 
         let remaining = read(self.receive_samples);
         if remaining != 0 {
+	    // requesting, and then receiving the sample
             send(tok, self.sample_clock, ());
             let (tok, sample_result) = recv(tok, self.sample_rec);
 
