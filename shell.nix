@@ -40,4 +40,9 @@ used_stdenv.mkDerivation {
 
       llvmPackages_21.clang-tools  # clangd
     ];
+  DSLX_STDLIB_PATH="${xls}/lib/xls/dslx/stdlib";
+
+  # Possibly ':'-separated more paths to search
+  DSLX_PATH="${xls}/lib";
+
 }
