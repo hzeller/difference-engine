@@ -134,15 +134,14 @@ impl SamplerTest {
         // on startup: send a request
         let is_starting = read(self.starting);
         let tok = if is_starting {
-            trace_fmt!("sending request");
-            let tok = send(tok, self.request, IterationRequest<u32, PD> {
+            write(self.starting, false);
+            trace_fmt!("start: sending request");
+            send(tok, self.request, IterationRequest<u32, PD> {
                 registers: PolynomialRegisters<u32, PD> {
                     reg: INITIAL_REGISTERS,
                 },
                 count: receive_samples,
-            });
-            write(self.starting, false);
-            tok
+            })
         } else {
             tok
         };
@@ -150,7 +149,7 @@ impl SamplerTest {
         const EXPECTED_SEQ = [u32:3, 8, 15, 24, 35, 48, 63, 80];
 
         let remaining = read(self.receive_samples);
-        if remaining != 0{
+        if remaining != 0 {
             send(tok, self.sample_clock, ());
             let (tok, sample_result) = recv(tok, self.sample_rec);
 
