@@ -101,7 +101,7 @@ fn main() {
         std::mem::size_of::<RegisterNumber>(),
         std::mem::size_of::<HiResNumber>()
     );
-    eprintln!("{:3}\t{:12}\t{:12}\t{:10}\t{}", "x", "iterative", "actual", "error", "err%");
+    eprintln!("{:>3} {:>5}\t{:>12}\t{:>12}\t{:>10}\t{}", "i", "x", "iterative", "actual", "error", "err%");
 
     // Loop through samples
     for i in 0..K_NUM_SAMPLES {
@@ -116,7 +116,8 @@ fn main() {
 
         // Print results to stdout
         println!(
-            "{x:3.1}\t{iterative_result:12.6}\t{actual_result:12.6}\t{error:10.6e}\t{error_percent:.5}",
+            "{i:3} {x:5.1}\t{iterative_result:12.6}\t{actual_result:12.6}\t{error:10.6e}\t{error_percent:.5}",
+            i = i,
             x = x,
             iterative_result = iterative_result,
             actual_result = actual_result,

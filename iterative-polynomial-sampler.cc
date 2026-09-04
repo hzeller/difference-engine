@@ -154,8 +154,8 @@ int main(int, char *[]) {
           "Register number representation: %d bytes; hi-res polynomial "
           "coefficient size: %d bytes\n",
           (int)sizeof(register_number_t), (int)sizeof(hires_number_t));
-  fprintf(stderr, "%3s\t%12s\t%12s\t%10s\t%s\n", "x", "iterative", "actual",
-          "error", "err%");
+  fprintf(stderr, "%3s %5s\t%12s\t%12s\t%10s\t%s\n", "i", "x",
+          "iterative", "actual", "error", "err%");
   for (int i = 0; i < kNumSamples; ++i) {
     const hires_number_t x = kX + i * kDx;
 
@@ -169,7 +169,7 @@ int main(int, char *[]) {
 
     // Here, we cast them to double or long double that the format string always
     // works
-    fprintf(stdout, "%3.1f\t%12.6f\t%12.6f\t%10Le\t%.5f\n", (double)x,
+    fprintf(stdout, "%3d %5.1f\t%12.6f\t%12.6f\t%10Le\t%.5f\n", i, (double)x,
             (double)iterative_result, (double)actual_result, (long double)error,
             (double)error_percent);
   }
