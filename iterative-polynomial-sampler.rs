@@ -124,3 +124,8 @@ fn main() {
         );
     }
 }
+
+// Local Variables:
+// mode: rust
+// indent-tabs-mode: nil
+// End:

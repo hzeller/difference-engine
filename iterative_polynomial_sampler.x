@@ -1,5 +1,4 @@
 //usr/bin/env -S make iterative_polynomial_sampler.test; exit
-// -*- mode: rust; indent-tabs-mode: nil -*-
 
 #![feature(generics)]
 #![feature(explicit_state_access)]
@@ -116,7 +115,7 @@ impl SamplerTest {
         let (sample_s, sample_r) = chan<u32>("sample");
 
         let dut = IterativePolynomialSampler<u32, PD>::new(req_r, clk_r,
-        						   sample_s);
+                					   sample_s);
         dut.spawn();
 
         SamplerTest {
@@ -165,3 +164,8 @@ impl SamplerTest {
         }
     }
 }
+
+// Local Variables:
+// mode: rust
+// indent-tabs-mode: nil
+// End:
