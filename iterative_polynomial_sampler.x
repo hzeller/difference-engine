@@ -120,7 +120,7 @@ impl SamplerTest {
     const PD = array_size(INITIAL_REGISTERS) - 1;  // Polynomial degree
 
     fn new(done: chan<bool> out) -> Self {
-        // This is not a |
+        // Ceci n'est pas une |
         let (req_s, req_r)       = chan<IterationRequest<T, PD>>("new_it");
         let (clk_s, clk_r)       = chan<()>("sample-clock");
         let (sample_s, sample_r) = chan<T>("sample");
