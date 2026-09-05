@@ -70,6 +70,31 @@ impl IterativePolynomialSampler<T, DEGREE> {
 
         // On every sample request
         let state = if state.count != 0 {
+
+            //------------------------------------------------
+            // TODO: XLS will probably try to cram all the DEGREE additions
+            // in some pipelines, use many adders and intermediate flops.
+            //
+            // BUT, we know thaqt it is totally fine to send the result a few
+            // thousand clock cycles later, as the frequency of the sample_clock
+            // is low compared to the ASIC clock and we don't care about
+            // latency as long as we can get one output in per sample_clock.
+            // Of course XLS doesn't know that, so it would be good if we had
+            // a way to annotate that.
+            //
+            // This will help save area as we only really need one adder that
+            // we can time-multiplex share. Even the adder itself could be split
+            // into sub-bits to not hog the clock with 64 bit carry chains.
+            //
+            // So ideally I'd like to tell XLS that it is ok that from
+            // recv(sample_clock) to send(sample_out) we can 'occupy' the tok
+            // for 1000 asic cycles or so so that it can choose a strategy
+            // that saves resources.
+            //
+            // Needs some resource-sharing design doc. Probably Simone
+            // already has something in mind.
+            //------------------------------------------------
+
             let (tok, _) = recv(tok, self.sample_clock);
             let reg = for (i, reg) in 0..DEGREE {
                 // TODO: currently, this only works for integers, we should use
