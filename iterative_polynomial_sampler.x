@@ -11,7 +11,7 @@ struct PolynomialRegisters<T: type, DEGREE: u32> {
     reg: T[DEGREE + 1],
 }
 
-// An iteration request for a proc is the newly initialized registerss
+// An iteration request for a proc is the newly initialized registers
 // and the number of samples we want the proc to emit.
 // The iteration request also represents our state.
 struct IterationRequest<T: type, DEGREE: u32> {
@@ -25,15 +25,19 @@ impl IterationRequest<T, DEGREE> {
     }
 }
 
-// Iterative sampler of a polygon with DEGREE.
+// Iterative sampler of a polynomial with DEGREE.
+//
 // The IterationRequest provides the initial register set and the number
 // of samples we like it to generate.
-// With every `sample_clock` a new value is calculated and emitted on the
-// `sample_out` output channel.
-// If all samples are emitted (IterationRequest::count), then the proc waits
-// for the next IterationRequest arrive.
+//
+// With every `sample_clock` trigger (an empty tuple channel) a new value is
+// calculated and emitted on the `sample_out` output channel.
+//
+// Once all samples are emitted (IterationRequest::count), then the proc waits
+// for the next IterationRequest to arrive.
 proc IterativePolynomialSampler<T: type, DEGREE: u32> {
-    // A new request for emitting polynomial samples.
+    // A new request for emitting polynomial samples, initial registers and
+    // desired number of samples to emit.
     request:      chan<IterationRequest<T, DEGREE>> in,
 
     // Pacing the output of the samples as needed.
