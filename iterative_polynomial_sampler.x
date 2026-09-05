@@ -169,7 +169,7 @@ impl SamplerTest {
         let remaining = read(self.receive_samples);
         if remaining != 0 {
             // requesting, and then receiving the sample
-            send(tok, self.sample_clock, ());
+            let tok = send(tok, self.sample_clock, ());
             let (tok, sample_result) = recv(tok, self.sample_rec);
 
             let index = SAMPLE_COUNT - remaining;
